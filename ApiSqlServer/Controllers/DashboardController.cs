@@ -69,8 +69,6 @@ namespace ApiSqlServerExample.Controllers
                                              }).OrderBy(v => v.CantidadVendida)// Ordenar por fecha (puedes cambiar esto según tu criterio)
             .Take(5)  // Obtener solo las primeras 3 filas
             .ToList();
-                                   
-
             return Ok(reporteVentasPorMes);
         }
 
