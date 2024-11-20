@@ -4,6 +4,7 @@ using ApiSqlServer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiSqlServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241120033018_newtwoTable")]
+    partial class newtwoTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,17 +70,21 @@ namespace ApiSqlServer.Migrations
                     b.Property<int>("Cantidad")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("FechaLlegada")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("FechaLlegada")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("PrecioTotal")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<string>("PrecioTotal")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProductoId")
-                        .HasColumnType("int");
+                    b.Property<string>("ProductoId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

@@ -4,6 +4,7 @@ using ApiSqlServer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiSqlServer.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241120031728_newtableVendedor")]
+    partial class newtableVendedor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,51 +40,6 @@ namespace ApiSqlServer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Disponibilidad");
-                });
-
-            modelBuilder.Entity("ApiSqlServer.Models.EstatusDelivery", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("EstatusDelivery");
-                });
-
-            modelBuilder.Entity("ApiSqlServer.Models.Order", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Cantidad")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("FechaLlegada")
-                        .HasColumnType("datetime2");
-
-                    b.Property<decimal>("PrecioTotal")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("ProductoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Order");
                 });
 
             modelBuilder.Entity("ApiSqlServer.Models.Product", b =>
