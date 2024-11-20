@@ -7,42 +7,73 @@ namespace ApiSqlServerExample.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrderController : ControllerBase
+    public class DashboardController : ControllerBase
     {
         private readonly AppDbContext _context;
 
-        public OrderController(AppDbContext context)
+        public DashboardController(AppDbContext context)
         {
             _context = context;
         }
 
         // GET: api/productos
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<OrderDetail>>> GetProductos()
+        public  ActionResult<DashboardCombinados> GetReport()
         {
-            var availableProducts = await _context.Order
+            var ventas =  _context.Order.
+                GroupBy(v => new { v.FechaPedido.Year, v.FechaPedido.Month })
+                .Select(g => new
+                {
+                    Año = g.Key.Year,
+                    Mes = g.Key.Month,
+                    TotalVentas = g.Count(),
+                    MontoTotal = g.Sum(v => v.PrecioTotal)
+                })
+                .OrderBy(g => g.Año).ThenBy(g => g.Mes) // Ordenar por Año y Mes
+                .ToList();
+
+            var compras = _context.Vendedor.
+               GroupBy(v => new { v.FechaPedido.Year, v.FechaPedido.Month })
+               .Select(g => new
+               {
+                   Año = g.Key.Year,
+                   Mes = g.Key.Month,
+                   TotalVentas = g.Count(),
+                   MontoTotal = g.Sum(v => v.PrecioTotal)
+               })
+       .OrderBy(g => g.Año).ThenBy(g => g.Mes) // Ordenar por Año y Mes
+       .ToList();
+
+            var datosCombinados = new 
+            {
+                CompraPorMes = compras,
+                VentaPorMes = ventas
+            };
+
+
+            return Ok(datosCombinados);
+        }
+
+        [HttpGet("top-selling")]
+        public IActionResult ObtenerVentasMayores()
+        {
+            var reporteVentasPorMes = _context.Order
                                        .Join(_context.Productos,
                                              p => p.ProductoId,
                                              pa => pa.Id,
-                                             (p, pa) => new { Order = p, Producto = pa })
-                                       .Join(_context.EstatusDelivery,
-                                        op => op.Order.Status,  // Clave de unión en la primera proyección 'Order'
-                                         c => c.Id,
-                                         (op, c) => new OrderDetail
-                                         {
-                                                 Id = op.Order.Id,
-                                                 ProductoId = op.Order.ProductoId,
-                                                 ProductoNombre = op.Producto.Nombre,
-                                                 Cantidad = op.Order.Cantidad,
-                                                 PrecioTotal = op.Order.PrecioTotal,
-                                                 FechaLlegada = op.Order.FechaLlegada,
-                                                 FechaPedido = op.Order.FechaPedido,
-                                                 Status = c.Nombre
-    })
-                                       .ToListAsync();
+                                             (p, pa) => new 
+                                             {
+                                                 Nombre = pa.Nombre,
+                                                 CantidadVendida = p.Cantidad,
+                                                 Precio = p.PrecioTotal
+                                             }).OrderBy(v => v.CantidadVendida)// Ordenar por fecha (puedes cambiar esto según tu criterio)
+            .Take(5)  // Obtener solo las primeras 3 filas
+            .ToList();
+                                   
 
-            return availableProducts;
+            return Ok(reporteVentasPorMes);
         }
+
 
         // GET: api/productos/5
         [HttpGet("{id}")]

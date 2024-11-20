@@ -10,6 +10,8 @@
         public decimal PrecioTotal { get; set; }
         public DateTime? FechaLlegada { get; set; }
 
+        public DateTime? FechaPedido { get; set; }
+
         public string Status { get; set; }
     }
 }
